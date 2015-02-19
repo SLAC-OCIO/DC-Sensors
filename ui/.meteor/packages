@@ -6,6 +6,5 @@
 
 meteor-platform
 autopublish
-insecure
-nimble:restivus
+nimble:restivus@=0.6.0
 matb33:collection-hooks

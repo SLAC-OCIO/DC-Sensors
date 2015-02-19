@@ -10,5 +10,18 @@ Meteor.startup(function () {
     defaultOptions: {},
   });
   
+  Meteor.methods({
+    findSensors: function(arg){
+      // check(arg,String)
+      console.log('findSensors( ' + arg + ')');
+
+      // if ( true ) {
+      //   throw new Meteor.Error("some error here!");
+      // }
+      return 'findSensors()';
+    }
+  });
+  
+  
   
 });

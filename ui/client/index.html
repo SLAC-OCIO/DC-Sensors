@@ -5,35 +5,8 @@
 <body>
 
   <div name="heatmap">
-    <canvas id="heatmap" width="1000px" height="1000px"></canvas>
+    <canvas id="heatmap" width="1000px" height="800px"></canvas>
   </div>
-  <script>
-  
-  var data = [
-    [ 350,280, 32 ],
-    [ 120,120, 28 ],
-    [ 230,330, 35 ],
-    [ 440,240, 12 ],
-    [ 640,540, 60 ],
-    [ 650,670, 70 ],
-    [ 680,500, 30 ],
-    [ 690,340, 43 ],
-    [ 500,440, 38 ],
-    [ 550,240, 43 ],
-    [ 350,640, 49 ],
-    [ 580,540, 47 ]
-  ];
-  var plan = new Image();
-  plan.src = "images/floor2.svg";
-  plan.onload = function(){
-    var canvas = $('#heatmap');
-    var ctx = canvas[0].getContext('2d');
-    ctx.drawImage( plan,0,0, 1000, 1000 * plan.height / plan.width );
-  };
-  var heat = simpleheat('heatmap').data(data).max(20).radius( 10,40 );
-  
-  heat.draw(0.8);
-  </script>
 
   {{> sensor_list}}
   
