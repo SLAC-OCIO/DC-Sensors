@@ -1,1 +1,34 @@
 /* CSS declarations go here */
+body {
+    margin:0;
+}
+.logo.img {
+    max-width:300px;
+    display: inline-block;
+}
+
+.header {
+    height:6em;
+    background-color: #27556C;
+}
+.header .sitename {
+    font-family: Helvetica;
+    font-size: 3em;
+    margin:10px auto;
+    display:inline-block;
+    color: #6E92A1;
+    vertical-align: middle;
+    line-height: 1.5em;
+}
+
+.footer {
+    background-color: #27556C;
+    height: 6em;
+    line-height: 6em;
+    vertical-align: middle;
+    color: #6E92A1;
+}
+
+body > div:nth-child(5) {
+    display:none;
+}

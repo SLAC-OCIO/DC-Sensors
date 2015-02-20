@@ -3,13 +3,13 @@
 </head>
 
 <body>
-
+  {{>upper_chrome}}
   <div name="heatmap">
-    <canvas id="heatmap" width="1000px" height="800px"></canvas>
+    <canvas id="heatmap" width="1000px" height="800px" ></canvas>
   </div>
 
   {{> sensor_list}}
-  
+  {{> lower_chrome}}
 </body>
 
 <template name="sensor_list">
@@ -24,4 +24,17 @@
   <div class="sensor_item">
     <p>{{_id}}: time={{ts}} {{temp}}C {{humidity}}%</p>
   </div>
+</template>
+
+<template name="upper_chrome">
+    <div class="header">
+        <img src="../public/images/slac_logo.png" />
+        <div class="sitename">SLAC Data Center Temperature and Humidity</div>
+    </div>
+</template>
+
+<template name="lower_chrome">
+    <div class="footer">
+        <p>Thank you, The SLAC Data Center Sensors Project Team</p>
+    </div>
 </template>

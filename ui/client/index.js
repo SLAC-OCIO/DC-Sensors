@@ -37,7 +37,10 @@ Template.sensor_list.rendered = function(){
 };
 
 // keep hash of data values by id
-var data = {};
+//var data = {};
+
+//static data
+var data = { "00000000236668afaf952dee": { temp: 23 }, "00000000232e65058fb7bdee": { temp: 32 }, "00000000230e80068fb7bdee": { temp: 36 }}
 // hash of x,y based on id
 var locations = {
   "00000000236668afaf952dee": [ 300, 300 ],
@@ -51,11 +54,17 @@ var heat;
 // draw the heatmap
 var drawHeatMap = function ( metric ) {
   var plan = new Image();
-  plan.src = "images/floor2.svg";
+  plan.src = "images/floor4.svg";
   plan.onload = function(){
     var canvas = $('#heatmap');
     var ctx = canvas[0].getContext('2d');
-    ctx.drawImage( plan,0,0, 1000, 1000 * plan.height / plan.width );
+    ctx.globalAlpha = 0.3;
+    ctx.drawImage( plan,50,0, 1000, 1000 * plan.height / plan.width );
+    //canvas manipulation
+//    var control = new CanvasManipulation(ctx, draw);
+//    control.init();
+//    control.layout();
+    ctx.globalAlpha = 1.0;
   };
   // remap data into an array of 3-tuples (x,y,v)
   var tuples = []
@@ -69,7 +78,7 @@ var drawHeatMap = function ( metric ) {
   }
   // console.log("data: %o", tuples);
   heat = simpleheat('heatmap').data(tuples).max(20).radius( 10,40 );
-  heat.draw(0.5);
+  heat.draw(0.9);
 }
 
 // attach observers for when data is added or changed
