@@ -61,9 +61,9 @@ var drawHeatMap = function ( metric ) {
     ctx.globalAlpha = 0.3;
     ctx.drawImage( plan,50,0, 1000, 1000 * plan.height / plan.width );
     //canvas manipulation
-//    var control = new CanvasManipulation(ctx, draw);
-//    control.init();
-//    control.layout();
+    var control = new CanvasManipulation(ctx, drawImage);
+    control.init();
+    control.layout();
     ctx.globalAlpha = 1.0;
   };
   // remap data into an array of 3-tuples (x,y,v)
