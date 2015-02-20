@@ -1,5 +1,7 @@
 Meteor.startup(function () {
 
+  console.log("starting server...");
+
   // config rest endpoints
   Restivus.configure({
     useAuth: false,

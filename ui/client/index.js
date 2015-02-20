@@ -27,9 +27,14 @@ Template.sensor_list.helpers({
   }
 });
 
-// Template.sensor_list.rendered = function(){
-//   console.log("updated!");
-// };
+
+// TODO link to a drop down in ui
+var metric = 'temp';
+
+
+Template.sensor_list.rendered = function(){
+  drawHeatMap( metric );
+};
 
 // keep hash of data values by id
 var data = {};
@@ -66,9 +71,6 @@ var drawHeatMap = function ( metric ) {
   heat = simpleheat('heatmap').data(tuples).max(20).radius( 10,40 );
   heat.draw(0.5);
 }
-
-// TODO link to a drop down in ui
-var metric = 'temp';
 
 // attach observers for when data is added or changed
 Sensors.find().observe({
