@@ -2,14 +2,26 @@
 body {
     margin:0;
 }
-.logo.img {
-    max-width:300px;
-    display: inline-block;
-}
 
 .header {
     height:6em;
     background-color: #27556C;
+    border-bottom: inset;
+    border-bottom-color: firebrick;
+    border-bottom-width: .5em;
+}
+.header .logo {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 5px 10px;
+    background-color:#6E92A1;
+    padding:.5em;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+.header img {
+    max-width:150px;
 }
 .header .sitename {
     font-family: Helvetica;
