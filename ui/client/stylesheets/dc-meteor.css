@@ -25,12 +25,11 @@ body {
 }
 .header .sitename {
     font-family: Helvetica;
-    font-size: 3em;
-    margin:10px auto;
+    font-size: 2.5em;
     display:inline-block;
     color: #6E92A1;
     vertical-align: middle;
-    line-height: 1.5em;
+    line-height: 2.5em;
 }
 
 .footer {
