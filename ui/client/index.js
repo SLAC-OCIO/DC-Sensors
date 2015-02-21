@@ -43,7 +43,7 @@ Template.sensor_list.rendered = function(){
 var data = { "00000000236668afaf952dee": { temp: 23 }, "00000000232e65058fb7bdee": { temp: 32 }, "00000000230e80068fb7bdee": { temp: 36 }}
 // hash of x,y based on id
 var locations = {
-  "00000000236668afaf952dee": [ 300, 300 ],
+  "00000000236668afaf952dee": [ 250, 200 ],
   "00000000232e65058fb7bdee": [ 400, 400 ], 
   "00000000230e80068fb7bdee": [ 500, 500 ], 
 };
@@ -73,8 +73,8 @@ var drawHeatMap = function ( metric ) {
     }
   }
   // console.log("data: %o", tuples);
-  heat = simpleheat('heatmap').data(tuples).max(20).radius( 10,40 );
-  heat.draw(0.9);
+  heat = simpleheat('heatmap2').data(tuples).max(20).radius( 5,20 );
+  heat.draw(0.5);
 }
 
 // attach observers for when data is added or changed

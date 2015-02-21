@@ -40,6 +40,18 @@ body {
     color: #6E92A1;
 }
 
-body > div:nth-child(5) {
+body > div:nth-child(4) {
     display:none;
+}
+#heatmap {
+    position:absolute;
+    left:0;
+    top:2em;
+    z-index:0;
+}
+#heatmap2 {
+    position:absolute;
+    left:0;
+    top:2em;
+    z-index:1;
 }
