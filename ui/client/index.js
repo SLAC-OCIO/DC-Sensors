@@ -54,7 +54,7 @@ var heat;
 // draw the heatmap
 var drawHeatMap = function ( metric ) {
   var plan = new Image();
-  plan.src = "images/floorplan.svg";
+
   plan.onload = function(){
     var canvas = $('#heatmap');
     var ctx = canvas[0].getContext('2d');
@@ -73,9 +73,10 @@ var drawHeatMap = function ( metric ) {
     }
   }
   // console.log("data: %o", tuples);
-  heat = simpleheat('heatmap2').data(tuples).max(20).radius( 5,20 );
-  heat.draw(0.5);
+  //heat = simpleheat('heatmap2').data(tuples).max(20).radius( 5,20 );
+  //heat.draw(0.9);
 }
+startzoom();
 
 // attach observers for when data is added or changed
 Sensors.find().observe({
