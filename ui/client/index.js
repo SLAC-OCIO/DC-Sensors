@@ -54,7 +54,7 @@ var heat;
 // draw the heatmap
 var drawHeatMap = function ( metric ) {
   var plan = new Image();
-  plan.src = "images/floor4.svg";
+  plan.src = "images/floorplan.svg";
   plan.onload = function(){
     var canvas = $('#heatmap');
     var ctx = canvas[0].getContext('2d');
