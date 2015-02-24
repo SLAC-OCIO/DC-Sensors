@@ -36,6 +36,7 @@ Template.sensor_list.rendered = function(){
     var hmap = new DrawMaps();
     hmap.drawHeatMap( metric );
     hmap.drawFloorPlan();
+    hmap.drawCircles();
 
 };
 
@@ -56,10 +57,10 @@ var locations = {
     "00000000232e65058fb7bdee": [ 400, 400 ],
     "00000000230e80068fb7bdee": [ 500, 500 ],
     "00000000230e80068fb7bdef": [ 500, 550 ],
-    "00000000230e80068fb7bdeb": [ 500, 575 ]
+    "00000000230e80068fb7bdeb": [ 510, 550 ]
 };
 
-var heat;
+//var heat; what's this for?
 
 // attach observers for when data is added or changed
 Sensors.find().observe({
@@ -77,11 +78,11 @@ Sensors.find().observe({
     DrawMaps.drawHeatMap( metric );
   }
 });
+
 function DrawMaps() {
 //setup vars
     var tuples = [];
     var radius = 10;
-    var contrast = [];
 
 
 // draw the floorplan
@@ -97,7 +98,21 @@ function DrawMaps() {
         };
 
 
-    }
+    };
+
+//draw the contrasting circles
+    this.drawCircles = function (){
+        var canvas = $('#contrast_circle');
+        var ctx = canvas[0].getContext('2d');
+        for (var id in data) {
+            ctx.beginPath();
+            ctx.arc(data[0], data[1], radius, 0, 2 * Math.PI, false);
+            ctx.closePath();
+            ctx.fillStyle = 'purple';
+            ctx.fill();
+        }
+    };
+
 //draw the heatmap
     this.drawHeatMap = function (metric) {
         // remap data into an array of 3-tuples (x,y,v)
@@ -111,27 +126,9 @@ function DrawMaps() {
             }
         }
 
-        for (var id in locations) {
-            if (id in data) {
-                var t = locations[id].slice();
-                t.push(data[id], radius)
-                console.log('%s %o', id, t);
-                contrast.push(t);
-            }
-        }
-        // console.log("data: %o", tuples);
+        //console.log("data: %o", tuples);
         heat = simpleheat('heatmap').data(tuples).max(20).radius(5, 20);
-        heat.draw(0.5);
-    }
-//draw the contrasting circles
-    this.contrastingCircles = function () {
-        var canvas = $('#contrast_circle');
-        var ctx = canvas[0].getContext('2d');
-        //wrap this in a for loop
-            ctx.arc(x, y, radius, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.draw(1,1);
-        //end loop
-        //var contrastCircle = d3.selectAll("circle");
-    }
-};
+        heat.draw(1);
+    };
+
+}
