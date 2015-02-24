@@ -70,11 +70,11 @@ Sensors.find().observe({
       // TODO location[_id] = []
     }
     data[datum._id] = datum
-    drawHeatMap( metric );
+    DrawMaps.drawHeatMap(metric );
   },
   changed: function(datum) {
     console.log('sensor %s changed() %o', datum._id, datum);
-    drawHeatMap( metric );
+    DrawMaps.drawHeatMap( metric );
   }
 });
 function DrawMaps() {
