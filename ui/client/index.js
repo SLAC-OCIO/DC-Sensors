@@ -100,19 +100,6 @@ function DrawMaps() {
 
     };
 
-//draw the contrasting circles
-    this.drawCircles = function (){
-        var canvas = $('#contrast_circle');
-        var ctx = canvas[0].getContext('2d');
-        for (var id in data) {
-            ctx.beginPath();
-            ctx.arc(data[0], data[1], radius, 0, 2 * Math.PI, false);
-            ctx.closePath();
-            ctx.fillStyle = 'purple';
-            ctx.fill();
-        }
-    };
-
 //draw the heatmap
     this.drawHeatMap = function (metric) {
         // remap data into an array of 3-tuples (x,y,v)
@@ -130,5 +117,19 @@ function DrawMaps() {
         heat = simpleheat('heatmap').data(tuples).max(20).radius(5, 20);
         heat.draw(1);
     };
+//draw the contrasting circles
+    this.drawCircles = function (){
+        var canvas = $('#contrast_circle');
+        var ctx = canvas[0].getContext('2d');
 
+            for (var id in tuples) {
+                ctx.beginPath(); //open an svg path
+                ctx.arc(tuples[0], tuples[1], radius, 0, 2 * Math.PI, false); //define arc
+                ctx.closePath(); //close the path
+                ctx.fillStyle = 'purple'; //define fill color
+                ctx.fill(); //fill the path
+            }
+        ctx.draw(0.9);
+
+    };
 }
