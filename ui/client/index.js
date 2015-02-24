@@ -33,49 +33,33 @@ var metric = 'temp';
 
 
 Template.sensor_list.rendered = function(){
-  drawHeatMap( metric );
+    var hmap = new DrawMaps();
+    hmap.drawHeatMap( metric );
+    hmap.drawFloorPlan();
+
 };
 
 // keep hash of data values by id
 //var data = {};
 
 //static data
-var data = { "00000000236668afaf952dee": { temp: 23 }, "00000000232e65058fb7bdee": { temp: 32 }, "00000000230e80068fb7bdee": { temp: 36 }}
+var data = {
+    "00000000236668afaf952dee": { temp: 23 },
+    "00000000232e65058fb7bdee": { temp: 32 },
+    "00000000230e80068fb7bdee": { temp: 36 },
+    "00000000230e80068fb7bdef": { temp: 33 },
+    "00000000230e80068fb7bdeb": { temp: 65 }
+};
 // hash of x,y based on id
 var locations = {
-  "00000000236668afaf952dee": [ 250, 200 ],
-  "00000000232e65058fb7bdee": [ 400, 400 ], 
-  "00000000230e80068fb7bdee": [ 500, 500 ], 
+    "00000000236668afaf952dee": [ 250, 200 ],
+    "00000000232e65058fb7bdee": [ 400, 400 ],
+    "00000000230e80068fb7bdee": [ 500, 500 ],
+    "00000000230e80068fb7bdef": [ 500, 550 ],
+    "00000000230e80068fb7bdeb": [ 500, 575 ]
 };
 
 var heat;
-
-
-// draw the heatmap
-var drawHeatMap = function ( metric ) {
-  var plan = new Image();
-  plan.src = "images/floor4.svg";
-  plan.onload = function(){
-    var canvas = $('#heatmap');
-    var ctx = canvas[0].getContext('2d');
-    ctx.globalAlpha = 0.3;
-    ctx.drawImage( plan,50,0, 1000, 1000 * plan.height / plan.width );
-    ctx.globalAlpha = 1.0;
-  };
-  // remap data into an array of 3-tuples (x,y,v)
-  var tuples = []
-  for ( var id in locations ) {
-    if ( id in data ) {
-      var t = locations[id].slice();
-      t.push( data[id][metric] )
-      // console.log('%s %o', id, t);
-      tuples.push( t );
-    }
-  }
-  // console.log("data: %o", tuples);
-  heat = simpleheat('heatmap2').data(tuples).max(20).radius( 5,20 );
-  heat.draw(0.5);
-}
 
 // attach observers for when data is added or changed
 Sensors.find().observe({
@@ -93,3 +77,61 @@ Sensors.find().observe({
     drawHeatMap( metric );
   }
 });
+function DrawMaps() {
+//setup vars
+    var tuples = [];
+    var radius = 10;
+    var contrast = [];
+
+
+// draw the floorplan
+    this.drawFloorPlan = function () {
+        var plan = new Image();
+        plan.src = "images/floorplan.svg";
+        plan.onload = function () {
+            var canvas = $('#floorplan');
+            var ctx = canvas[0].getContext('2d');
+            ctx.globalAlpha = 0.3;
+            ctx.drawImage(plan, 50, 0, 1000, 1000 * plan.height / plan.width);
+            ctx.globalAlpha = 1.0;
+        };
+
+
+    }
+//draw the heatmap
+    this.drawHeatMap = function (metric) {
+        // remap data into an array of 3-tuples (x,y,v)
+
+        for (var id in locations) {
+            if (id in data) {
+                var t = locations[id].slice();
+                t.push(data[id][metric])
+                console.log('%s %o', id, t);
+                tuples.push(t);
+            }
+        }
+
+        for (var id in locations) {
+            if (id in data) {
+                var t = locations[id].slice();
+                t.push(data[id], radius)
+                console.log('%s %o', id, t);
+                contrast.push(t);
+            }
+        }
+        // console.log("data: %o", tuples);
+        heat = simpleheat('heatmap').data(tuples).max(20).radius(5, 20);
+        heat.draw(0.5);
+    }
+//draw the contrasting circles
+    this.contrastingCircles = function () {
+        var canvas = $('#contrast_circle');
+        var ctx = canvas[0].getContext('2d');
+        //wrap this in a for loop
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.draw(1,1);
+        //end loop
+        //var contrastCircle = d3.selectAll("circle");
+    }
+};

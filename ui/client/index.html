@@ -5,12 +5,13 @@
 <body>
   {{>upper_chrome}}
   <div name="heatmap">
-    <canvas id="heatmap" width="1000px" height="800px" ></canvas>
-    <canvas id="heatmap2" width="1000px" height="800px"></canvas>
+    <canvas id="floorplan" width="1000px" height="800px" ></canvas>
+    <canvas id="heatmap" width="1000px" height="800px"></canvas>
+    <canvas id="contrast_circle" width="1000px" height="800px"></canvas>
   </div>
 
   {{> sensor_list}}
-
+  {{>lower_chrome}}
 </body>
 
 <template name="sensor_list">
@@ -22,9 +23,9 @@
 </template>
 
 <template name="sensor_item">
-  <div class="sensor_item">
-    <p>{{_id}}: time={{ts}} {{temp}}C {{humidity}}%</p>
-  </div>
+  <ul class="sensor_item">
+    <li>{{_id}}: time={{ts}} {{temp}}C {{humidity}}%</li>
+  </ul>
 </template>
 
 <template name="upper_chrome">
@@ -32,12 +33,12 @@
         <div class="logo">
             <img src="/images/slac_logo.png" />
         </div>
-        <div class="sitename">SLAC Data Center Temperature and Humidity</div>
+        <div class="sitename">OCIO DC Intelligent Sensor Network</div>
     </div>
 </template>
 
 <template name="lower_chrome">
     <div class="footer">
-        <p>Thank you, The SLAC Data Center Sensors Project Team</p>
+        <p>Thank you, The OCIO DCISN Team</p>
     </div>
 </template>

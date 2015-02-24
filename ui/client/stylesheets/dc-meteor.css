@@ -40,7 +40,7 @@ body {
     color: #6E92A1;
 }
 
-body > div:nth-child(4) {
+body > div:nth-child(5) {
     display:none;
 }
 #heatmap {
@@ -49,9 +49,18 @@ body > div:nth-child(4) {
     top:2em;
     z-index:0;
 }
-#heatmap2 {
+#floorplan {
     position:absolute;
     left:0;
     top:2em;
     z-index:1;
+}
+.sensor_list {
+    width: 300px;
+    postion: absolute;
+    right: -20em;
+    top:2em;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
 }
