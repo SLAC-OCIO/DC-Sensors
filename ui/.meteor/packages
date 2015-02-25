@@ -7,5 +7,5 @@
 meteor-platform
 autopublish
 nimble:restivus@=0.6.0
-matb33:collection-hooks
 insecure
+yee379:livestamp

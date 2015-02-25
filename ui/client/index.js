@@ -71,12 +71,6 @@ Sensors.find().observe({
 
 // helper functions
 Template.sensor_item.helpers({
-  // use timeago instead?
-  time_delta: function(epoch_time){
-    var now = (new Date).getTime() / 1000;
-    var diff = epoch_time - now;
-    return diff < 1 ? 'now' : diff.toFixed(0) + ' ago';
-  },
   // return description of sensor
   description: function(id){
     return ( id in locations ) ? locations[id][2] : '-';
