@@ -59,7 +59,7 @@ var locations = {
   "00000000231263068fb7bdee": [ 655, 425 ], // 2BF38 R
   "00000000233010aeaf952dee": [ 642, 425 ], // 2BF37 R 
   "00000000232e65058fb7bdee": [ 648, 443 ], // btwn 2BF37 2BF38 Front 
-  "00000000236668afaf952dee": [ 638, 443 ]  // btwn 2BF37 2BF38 Front
+  "00000000236668afaf952dee": [ 638, 443 ],  // btwn 2BF37 2BF38 Front
 };
 
 //var heat; what's this for?
