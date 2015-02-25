@@ -132,7 +132,7 @@ function DrawMaps() {
             ctx.closePath(); //close the path
             ctx.fillStyle = 'blue'; //define fill color
             ctx.fill(); //fill the path
-            
+
             //console.log(ctx);
 
         }
