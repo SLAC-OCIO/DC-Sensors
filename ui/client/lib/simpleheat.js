@@ -25,13 +25,13 @@ simpleheat.prototype = {
     defaultRadius: 25,
 
     defaultGradient: {
-        0.4: 'red',
-        0.5: 'green',
-        0.6: 'orange',
-        0.7: 'lime',
-        0.8: 'yellow',
-        0.9: 'lime',
-        1.0: 'red'
+        0.4: 'green',
+        0.5: 'orange',
+        0.6: 'lime',
+        0.7: 'yellow',
+        0.8: 'red',
+        0.9: 'purple',
+        1.0: 'blue'
     },
 
     data: function (data) {

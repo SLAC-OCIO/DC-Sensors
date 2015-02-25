@@ -16,7 +16,7 @@ Sensors = new Meteor.Collection('sensor');
 //   }
 // });
 
-console.log('starting app...');
+//console.log('starting app...');
 
 Template.sensor_list.helpers({
   sensors: function() {
@@ -34,9 +34,11 @@ var metric = 'temp';
 
 Template.sensor_list.rendered = function(){
     var hmap = new DrawMaps();
-    hmap.drawHeatMap( metric );
+    hmap.tuplesMerge(metric);
+    hmap.drawHeatMap();
     hmap.drawFloorPlan();
     hmap.drawCircles();
+    hmap.combineCanvas();
 
 };
 
@@ -82,8 +84,21 @@ Sensors.find().observe({
 function DrawMaps() {
 //setup vars
     var tuples = [];
-    var radius = 10;
+    var radius = 2;
+//compose tuples
+    this.tuplesMerge = function (metric) {
 
+        for (var id in locations) {
+            if (id in data) {
+                var t = locations[id].slice();
+                t.push(data[id][metric])
+                //console.log('%s %o', id, t);
+                tuples.push(t);
+            }
+        }
+
+        //console.log("data: %o", tuples);
+    }
 
 // draw the floorplan
     this.drawFloorPlan = function () {
@@ -101,19 +116,8 @@ function DrawMaps() {
     };
 
 //draw the heatmap
-    this.drawHeatMap = function (metric) {
+    this.drawHeatMap = function () {
         // remap data into an array of 3-tuples (x,y,v)
-
-        for (var id in locations) {
-            if (id in data) {
-                var t = locations[id].slice();
-                t.push(data[id][metric])
-                console.log('%s %o', id, t);
-                tuples.push(t);
-            }
-        }
-
-        //console.log("data: %o", tuples);
         heat = simpleheat('heatmap').data(tuples).max(20).radius(5, 20);
         heat.draw(1);
     };
@@ -122,14 +126,28 @@ function DrawMaps() {
         var canvas = $('#contrast_circle');
         var ctx = canvas[0].getContext('2d');
 
-            for (var id in tuples) {
-                ctx.beginPath(); //open an svg path
-                ctx.arc(tuples[0], tuples[1], radius, 0, 2 * Math.PI, false); //define arc
-                ctx.closePath(); //close the path
-                ctx.fillStyle = 'purple'; //define fill color
-                ctx.fill(); //fill the path
-            }
-        ctx.draw(0.9);
+        for (var id in tuples) {
+            ctx.beginPath(); //open an svg path
+            ctx.arc(tuples[id][0], tuples[id][1], radius, 0, 2 * Math.PI, false); //define arc
+            ctx.closePath(); //close the path
+            ctx.fillStyle = 'blue'; //define fill color
+            ctx.fill(); //fill the path
+            
+            //console.log(ctx);
+
+        }
 
     };
+}
+//combine canvasi
+this.combineCanvas = function () {
+    floor = document.getElementsByName('#floorplan');
+    var ctFloor = floor.getContext('2d');
+    thisHeat = document.getElementsByName('#heatmap');
+    var ctHeat = thisHeat.getContext('2d');
+    circles = document.getElementsByName('#contrast_circle');
+    var ctCircles = circles.getContext('2d');
+    ctCircles.drawImage(floor, 0, 0);
+    ctCircles.drawImage(thisHeat, 0, 0);
+
 }
