@@ -34,19 +34,19 @@ Template.sensor_list.rendered = function(){
 // keep hash of data values by id
 //static data
 var data = {
-  "00000000237547038fb7bdee": { temp: 100, desc: '2BF39R' },
-  "00000000231263068fb7bdee": { temp: 100, desc: '2BF38R' },
-  "00000000233010aeaf952dee": { temp: 100, desc: '2BF37R' },
-  "00000000232e65058fb7bdee": { temp: 100, desc: '2BF38F' },
-  "00000000236668afaf952dee": { temp: 100, desc: '2BF37F' }
+  "00000000237547038fb7bdee": { temp: 100 },
+  "00000000231263068fb7bdee": { temp: 100 },
+  "00000000233010aeaf952dee": { temp: 100 },
+  "00000000232e65058fb7bdee": { temp: 100 },
+  "00000000236668afaf952dee": { temp: 100 }
 };
 // hash of x,y based on id
 var locations = {
-  "00000000237547038fb7bdee": [ 666, 425 ], // 2BF39 R
-  "00000000231263068fb7bdee": [ 655, 425 ], // 2BF38 R
-  "00000000233010aeaf952dee": [ 642, 425 ], // 2BF37 R 
-  "00000000232e65058fb7bdee": [ 648, 443 ], // btwn 2BF37 2BF38 Front 
-  "00000000236668afaf952dee": [ 638, 443 ],  // btwn 2BF37 2BF38 Front
+  "00000000237547038fb7bdee": [ 666, 425, '2BF39R' ], // 2BF39 R
+  "00000000231263068fb7bdee": [ 655, 425, '2BF38R' ], // 2BF38 R
+  "00000000233010aeaf952dee": [ 642, 425, '2BF37R' ], // 2BF37 R 
+  "00000000232e65058fb7bdee": [ 648, 443, '2BF38F' ], // btwn 2BF37 2BF38 Front 
+  "00000000236668afaf952dee": [ 638, 443, '2BF37F' ],  // btwn 2BF37 2BF38 Front
 };
 
 
@@ -68,6 +68,21 @@ Sensors.find().observe({
     redraw();
   }
 });
+
+// helper functions
+Template.sensor_item.helpers({
+  // use timeago instead?
+  time_delta: function(epoch_time){
+    var now = (new Date).getTime() / 1000;
+    var diff = epoch_time - now;
+    return diff < 1 ? 'now' : diff.toFixed(0) + ' ago';
+  },
+  // return description of sensor
+  description: function(id){
+    return ( id in locations ) ? locations[id][2] : '-';
+  }
+});
+
 
 // redraw everything
 function redraw( metric ) {

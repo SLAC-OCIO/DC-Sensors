@@ -16,16 +16,21 @@
 
 <template name="sensor_list">
   <div class="sensor_list">
-    {{#each sensors}}
+    <table class="sensors">
+      <!-- <th>
+        <td>description</td><td>temperature</td><td>humidity</td><td>updated</td>
+      </th> -->
+      {{#each sensors}}
         {{> sensor_item}}
-    {{/each}}
+      {{/each}}
+    </table>
   </div>
 </template>
 
 <template name="sensor_item">
-  <ul class="sensor_item">
-    <li>{{desc}} / {{_id}}: time={{ts}} {{temp}}C {{humidity}}%</li>
-  </ul>
+<tr>
+  <td>{{description _id}}</td><td>{{temp}}C</td><td>{{humidity}}%</td><td>({{time_delta ts}})</td>
+</tr>
 </template>
 
 <template name="upper_chrome">
