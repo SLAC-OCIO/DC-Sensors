@@ -47,19 +47,19 @@ Template.sensor_list.rendered = function(){
 
 //static data
 var data = {
-    "00000000236668afaf952dee": { temp: 23 },
-    "00000000232e65058fb7bdee": { temp: 32 },
-    "00000000230e80068fb7bdee": { temp: 36 },
-    "00000000230e80068fb7bdef": { temp: 33 },
-    "00000000230e80068fb7bdeb": { temp: 65 }
+    "00000000237547038fb7bdee": { temp: 100, desc: '2BF39R' },
+    "00000000231263068fb7bdee": { temp: 100, desc: '2BF38R' },
+    "00000000233010aeaf952dee": { temp: 100, desc: '2BF37R' },
+    "00000000232e65058fb7bdee": { temp: 100, desc: '2BF38F' },
+    "00000000236668afaf952dee": { temp: 100, desc: '2BF37F' }
 };
 // hash of x,y based on id
 var locations = {
-    "00000000236668afaf952dee": [ 250, 200 ],
-    "00000000232e65058fb7bdee": [ 400, 400 ],
-    "00000000230e80068fb7bdee": [ 500, 500 ],
-    "00000000230e80068fb7bdef": [ 500, 550 ],
-    "00000000230e80068fb7bdeb": [ 510, 550 ]
+  "00000000237547038fb7bdee": [ 666, 425 ], // 2BF39 R
+  "00000000231263068fb7bdee": [ 655, 425 ], // 2BF38 R
+  "00000000233010aeaf952dee": [ 642, 425 ], // 2BF37 R 
+  "00000000232e65058fb7bdee": [ 648, 443 ], // btwn 2BF37 2BF38 Front 
+  "00000000236668afaf952dee": [ 638, 443 ]  // btwn 2BF37 2BF38 Front
 };
 
 //var heat; what's this for?
@@ -73,7 +73,7 @@ Sensors.find().observe({
       // TODO location[_id] = []
     }
     data[datum._id] = datum
-    DrawMaps.drawHeatMap(metric );
+    DrawMaps.drawHeatMap( metric );
   },
   changed: function(datum) {
     console.log('sensor %s changed() %o', datum._id, datum);
@@ -96,7 +96,6 @@ function DrawMaps() {
                 tuples.push(t);
             }
         }
-
         //console.log("data: %o", tuples);
     }
 
