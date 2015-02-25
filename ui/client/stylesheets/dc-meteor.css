@@ -74,11 +74,13 @@ body > div:nth-child(5) {
     width: 300px;
     display: block;
     float: right;
-    /* right: -20em; */
-    /* top: 2em; */
+    margin-top:3em;
     webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
     background-color: #6E91A1;
     color: antiquewhite;
+}
+.sensor_list li {
+    list-style: none;
 }
