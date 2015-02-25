@@ -61,11 +61,11 @@ Sensors.find().observe({
       // TODO location[_id] = []
     }
     data[datum._id] = datum
-    redraw();
+    redraw( metric );
   },
   changed: function(datum) {
     console.log('sensor %s changed() %o', datum._id, datum);
-    redraw();
+    redraw( metric );
   }
 });
 
@@ -95,9 +95,9 @@ function regenData( metric ) {
   var tuples = [];
   for (var id in locations) {
     if (id in data) {
-      var t = locations[id].slice();
-      t.push(data[id][metric])
-      // console.log('REGEN: %s %o', id, t);
+      var t = locations[id].slice(0,2);
+      t.push( parseFloat( data[id][metric] ) );
+      // console.log('REGEN: id=%s, metric=%s, data=%o tuple=%o', id, metric, data[id][metric], t);
       tuples.push(t);
     }
   }
@@ -121,7 +121,7 @@ function drawFloorPlan( layer, src ) {
 function drawHeatMap( layer_name, metric ) {
   var heat_data = regenData( metric );
   var grad = {0.3: 'green', 0.4: 'orange', 1: 'red'}
-  heat = simpleheat( layer_name ).data(heat_data).max(50).gradient(grad).radius(10, 20);
+  heat = simpleheat( layer_name ).data(heat_data).max(50).gradient(grad).radius(5, 20);
   heat.draw(1);
 };
 

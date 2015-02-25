@@ -26,8 +26,8 @@ simpleheat.prototype = {
 
     defaultGradient: {
     0.1: '#99FFFF',
-	0.2: '#00FFFF',
-	0.3: 'cyan',
+    0.2: '#00FFFF',
+    0.3: 'cyan',
     0.4: 'green',
     0.5: 'orange',
     0.6: 'lime',
@@ -115,6 +115,7 @@ simpleheat.prototype = {
         // draw a grayscale heatmap by putting a blurred circle at each data point
         for (var i = 0, len = this._data.length, p; i < len; i++) {
             p = this._data[i];
+            // console.log("DATA " + i + ": " + p[2]);
 
             ctx.globalAlpha = Math.max(p[2] / this._max, minOpacity === undefined ? 0.05 : minOpacity);
             ctx.drawImage(this._circle, p[0] - this._r, p[1] - this._r);
