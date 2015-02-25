@@ -27,18 +27,22 @@ Template.sensor_list.helpers({
   }
 });
 
+
+var metric = 'temp';
+
 Template.sensor_list.rendered = function(){
-    drawFloorPlan( $('#floorplan'), "images/floorplan.svg" );
+    // drawFloorPlan( $('#floorplan'), "images/floorplan.svg" );
+    redraw( metric );
 };
 
 // keep hash of data values by id
 //static data
 var data = {
-  "00000000237547038fb7bdee": { temp: 100 },
-  "00000000231263068fb7bdee": { temp: 100 },
-  "00000000233010aeaf952dee": { temp: 100 },
-  "00000000232e65058fb7bdee": { temp: 100 },
-  "00000000236668afaf952dee": { temp: 100 }
+  "00000000237547038fb7bdee": { temp: 15 },
+  "00000000231263068fb7bdee": { temp: 20 },
+  "00000000233010aeaf952dee": { temp: 30 },
+  "00000000232e65058fb7bdee": { temp: 16 },
+  "00000000236668afaf952dee": { temp: 24 }
 };
 // hash of x,y based on id
 var locations = {
@@ -49,8 +53,6 @@ var locations = {
   "00000000236668afaf952dee": [ 638, 443, '2BF37F' ],  // btwn 2BF37 2BF38 Front
 };
 
-
-var metric = 'temp';
 
 // attach observers for when data is added or changed
 Sensors.find().observe({
@@ -80,8 +82,8 @@ Template.sensor_item.helpers({
 
 // redraw everything
 function redraw( metric ) {
-  drawHeatMap( 'heatmap', metric );
-  drawCircles( $('#contrast_circle') );
+  drawHeatMap( '.heatmap', metric );
+  // drawCircles( $('#contrast_circle') );
 }
 
 // remap data into an array of 3-tuples (x,y,v)
@@ -89,8 +91,13 @@ function regenData( metric ) {
   var tuples = [];
   for (var id in locations) {
     if (id in data) {
-      var t = locations[id].slice(0,2);
-      t.push( parseFloat( data[id][metric] ) );
+      // var t = locations[id].slice(0,2);
+      // t.push( parseFloat( data[id][metric] ) );
+      var t = {
+        x: locations[id][0],
+        y: locations[id][1],
+        value: parseFloat( data[id][metric] )
+      };
       // console.log('REGEN: id=%s, metric=%s, data=%o tuple=%o', id, metric, data[id][metric], t);
       tuples.push(t);
     }
@@ -113,10 +120,20 @@ function drawFloorPlan( layer, src ) {
 
 //draw the heatmap
 function drawHeatMap( layer_name, metric ) {
-  var heat_data = regenData( metric );
+  var heat_data = { max: 100, min: 0, data: regenData( metric ) };
+  console.log("DATA: %o", heat_data );
   var grad = {0.3: 'green', 0.4: 'orange', 1: 'red'}
-  heat = simpleheat( layer_name ).data(heat_data).max(50).gradient(grad).radius(5, 20);
-  heat.draw(1);
+  // heat = simpleheat( layer_name ).data(heat_data).max(50).gradient(grad).radius(5, 20);
+  // heat.draw(1);
+  console.log("drawing heatmap...");
+  var heatmapInstance = h337.create({
+    container: document.querySelector(layer_name),
+    // onExtremaChange: function(data) {
+    //   updateLegend(data);
+    // }
+  });
+  heatmapInstance.setData( heat_data );
+  console.log("DONE");
 };
 
 //draw the contrasting circles
