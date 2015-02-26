@@ -15,11 +15,13 @@
 </body>
 
 <template name="sensor_list">
-  <ul class="sensor_list">
-      {{#each sensors}}
-        {{> sensor_item}}
-      {{/each}}
-  </ul>
+    <div sensor_wrapper>
+      <ul class="sensor_list">
+          {{#each sensors}}
+            {{> sensor_item}}
+          {{/each}}
+      </ul>
+    </div>
 </template>
 
 <template name="sensor_item">
