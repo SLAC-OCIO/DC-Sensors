@@ -464,6 +464,7 @@ Template.sensor_item.helpers({
 function redraw( metric ) {
   drawHeatMap( '.heatmap', metric );
   drawCircles( $('#contrast_circle') );
+  //combineCanvas();
 }
 
 var max = 45;
@@ -537,15 +538,56 @@ function drawCircles( layer ){
 
 
 //combine canvi
+/*
 function combineCanvas() {
     var floor = document.getElementsByName('#floorplan');
-    // var ctFloor = floor.getContext('2d');
     var thisHeat = document.getElementsByName('#heatmap');
-    // var ctHeat = thisHeat.getContext('2d');
-    // circles = document.getElementsByName('#contrast_circle');
-    // var ctCircles = circles.getContext('2d');
-    var canvas = $('#contrast_circle');
-    var ctx = canvas[0].getContext('2d');
-    ctx.drawImage(floor, 0, 0);
-    ctx.drawImage(thisHeat, 0, 0);
+    var circles = document.getElementsByName('#contrast_circle');
+    var ctFloor = floor.getContext('2d');
+    var ctHeat = thisHeat.getContext('2d');
+    var ctCircles = circles.getContext('2d');
+    ctCircles.drawImage(ctFloor, 0, 0);
+    ctCircles.drawImage(ctHeat, 0, 0);
+};*/
+/*
+var lastX = heatmap.width / 2, lastY = heatmap.height / 2;
+var dragStart, dragged;
+heatmap.addEventListener('mousedown', function (evt) {
+    document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
+    lastX = evt.offsetX || (evt.pageX - heatmap.offsetLeft);
+    lastY = evt.offsetY || (evt.pageY - heatmap.offsetTop);
+    dragStart = ctx.transformedPoint(lastX, lastY);
+    dragged = false;
+}, false);
+heatmap.addEventListener('mousemove', function (evt) {
+    lastX = evt.offsetX || (evt.pageX - heatmap.offsetLeft);
+    lastY = evt.offsetY || (evt.pageY - heatmap.offsetTop);
+    dragged = true;
+    if (dragStart) {
+        var pt = ctx.transformedPoint(lastX, lastY);
+        ctx.translate(pt.x - dragStart.x, pt.y - dragStart.y);
+        redraw();
+    }
+}, false);
+heatmap.addEventListener('mouseup', function (evt) {
+    dragStart = null;
+    if (!dragged) zoom(evt.shiftKey ? -1 : 1);
+}, false);
+
+var scaleFactor = 1.1;
+var zoom = function (clicks) {
+    var pt = ctx.transformedPoint(lastX, lastY);
+    ctx.translate(pt.x, pt.y);
+    var factor = Math.pow(scaleFactor, clicks);
+    ctx.scale(factor, factor);
+    ctx.translate(-pt.x, -pt.y);
+    redraw();
 }
+
+var handleScroll = function (evt) {
+    var delta = evt.wheelDelta ? evt.wheelDelta / 40 : evt.detail ? -evt.detail : 0;
+    if (delta) zoom(delta);
+    return evt.preventDefault() && false;
+};
+heatmap.addEventListener('DOMMouseScroll', handleScroll, false);
+heatmaps.addEventListener('mousewheel', handleScroll, false);*/
