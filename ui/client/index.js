@@ -90,17 +90,14 @@ function redraw( metric ) {
 function regenData( metric ) {
   var tuples = [];
   for (var id in locations) {
-    if (id in data) {
-      // var t = locations[id].slice(0,2);
-      // t.push( parseFloat( data[id][metric] ) );
-      var t = {
-        x: locations[id][0],
-        y: locations[id][1],
-        value: parseFloat( data[id][metric] )
-      };
-      // console.log('REGEN: id=%s, metric=%s, data=%o tuple=%o', id, metric, data[id][metric], t);
-      tuples.push(t);
-    }
+    var v = (id in data) ? parseFloat( data[id][metric] ) : Math.random() * 100
+    var t = {
+      x: locations[id][0],
+      y: locations[id][1],
+      value: v
+    };
+    console.log('REGEN: id=%s, metric=%s, tuple=%o', id, metric, t);
+    tuples.push(t);
   }
   return tuples;
 }
