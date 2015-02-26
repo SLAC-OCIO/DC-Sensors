@@ -27,18 +27,22 @@ Template.sensor_list.helpers({
   }
 });
 
+
+var metric = 'temp';
+
 Template.sensor_list.rendered = function(){
     drawFloorPlan( $('#floorplan'), "images/floorplan.svg" );
+    redraw( metric );
 };
 
 // keep hash of data values by id
 //static data
 var data = {
-  "00000000237547038fb7bdee": { temp: 100 },
-  "00000000231263068fb7bdee": { temp: 100 },
-  "00000000233010aeaf952dee": { temp: 100 },
-  "00000000232e65058fb7bdee": { temp: 100 },
-  "00000000236668afaf952dee": { temp: 100 }
+  "00000000237547038fb7bdee": { temp: 35 },
+  "00000000231263068fb7bdee": { temp: 28 },
+  "00000000233010aeaf952dee": { temp: 24 },
+  "00000000232e65058fb7bdee": { temp: 16 },
+  "00000000236668afaf952dee": { temp: 14 }
 };
 // hash of x,y based on id
 var locations = {
@@ -47,7 +51,7 @@ var locations = {
   "00000000233010aeaf952dee": [ 642, 425, '2BF37R' ], // 2BF37 R 
   "00000000232e65058fb7bdee": [ 648, 443, '2BF38F' ], // btwn 2BF37 2BF38 Front 
   "00000000236668afaf952dee": [ 638, 443, '2BF37F' ],  // btwn 2BF37 2BF38 Front
-  
+
   "000ac03": [ 265, 150 ],
   // "000ac04": [ 277, 150 ],
   // "000ac05": [ 288, 150 ],
@@ -102,7 +106,7 @@ var locations = {
   "000ai13": [ 380, 203 ],
   "000ai14": [ 391, 203 ],
   "000ai15": [ 402, 203 ],
-  
+
   "000al04": [ 281, 237 ],
   "000al05": [ 292, 237 ],
   "000al06": [ 303, 237 ],
@@ -112,7 +116,7 @@ var locations = {
   "000al10": [ 344, 237 ],
   "000al11": [ 355, 237 ],
   "000al12": [ 370, 237 ],
-  
+
   "000an04": [ 281, 256 ],
   "000an05": [ 292, 256 ],
   "000an06": [ 303, 256 ],
@@ -122,7 +126,7 @@ var locations = {
   "000an10": [ 344, 256 ],
   "000an11": [ 355, 256 ],
   "000an12": [ 370, 256 ],
-  
+
   "000ap06": [ 299, 276 ],
   "000ap07": [ 310, 276 ],
   "000ap08": [ 322, 276 ],
@@ -132,7 +136,7 @@ var locations = {
   "000ap12": [ 366, 276 ],
   "000ap13": [ 378, 276 ],
   "000ap14": [ 390, 276 ],
-  
+
   "000ar06": [ 299, 291 ],
   "000ar07": [ 310, 291 ],
   "000ar08": [ 322, 291 ],
@@ -319,7 +323,7 @@ var locations = {
   "000ay32": [ 587, 370 ],
   "000ba30": [ 572, 387 ],
   "000ba32": [ 587, 387 ],
-  
+
   "000bc24": [ 498, 412 ],
   "000bc25": [ 510, 412 ],
   "000bc26": [ 521, 412 ],
@@ -353,8 +357,8 @@ var locations = {
   "000bm26": [ 516, 510 ],
   "000bm27": [ 527, 510 ],
   "000bm28": [ 540, 510 ],
-  
-  
+
+
   "000br26": [ 517, 561 ],
   "000br27": [ 528, 561 ],
   "000br28": [ 539, 561 ],
@@ -376,7 +380,7 @@ var locations = {
   "000bt33": [ 599, 578 ],
   "000bt34": [ 610, 578 ],
   "000bt35": [ 621, 578 ],
-  
+
   "000bv28": [ 537, 603 ],
   "000bv29": [ 550, 603 ],
   "000bv30": [ 562, 603 ],
@@ -392,7 +396,7 @@ var locations = {
   "000bx32": [ 584, 618 ],
   "000bx33": [ 595, 618 ],
   "000bx34": [ 607, 618 ],
-  
+
   "000bz28": [ 537, 643 ],
   "000bz29": [ 549, 643 ],
   "000bz30": [ 559, 643 ],
@@ -425,13 +429,9 @@ var locations = {
   "000bz39": [ 667, 644 ],
   "000bz41": [ 683, 644 ],
   "000ca39": [ 667, 656 ],
-  "000ca41": [ 683, 656 ],
-
+  "000ca41": [ 683, 656 ]
 
 };
-
-
-
 
 var metric = 'temp';
 
@@ -463,23 +463,24 @@ Template.sensor_item.helpers({
 
 // redraw everything
 function redraw( metric ) {
-  drawHeatMap( $('#heatmap')[0], metric );
+  drawHeatMap( '.heatmap', metric );
   drawCircles( $('#contrast_circle') );
+  //combineCanvas();
 }
+
+var max = 45;
 
 // remap data into an array of 3-tuples (x,y,v)
 function regenData( metric ) {
   var tuples = [];
   for (var id in locations) {
-    // add the x,y coords
-    var t = locations[id].slice(0,2);
-    if (id in data) {
-      // add data
-      t.push( parseFloat( data[id][metric] ) );
-    } else {
-      t.push( Math.random()*100 );
-    }
-    // console.log('REGEN: id=%s, metric=%s, data=%o tuple=%o', id, metric, data[id][metric], t);
+    var v = (id in data) ? parseFloat( data[id][metric] ) : Math.random() * max;
+    var t = {
+      x: locations[id][0],
+      y: locations[id][1],
+      value: v
+    };
+    // console.log('REGEN: id=%s, metric=%s, tuple=%o', id, metric, t);
     tuples.push(t);
   }
   return tuples;
@@ -500,10 +501,22 @@ function drawFloorPlan( layer, src ) {
 
 //draw the heatmap
 function drawHeatMap( layer_name, metric ) {
-  var heat_data = regenData( metric );
-  var grad = {0: 'green', "0.4": 'blue', "0.625": 'orange', 1: 'red'};
-  heat = simpleheat( layer_name ).data(heat_data).max(40).gradient(grad).radius(8, 30);
-  heat.draw(0);
+  // console.log("drawing heatmap...");
+  var heatmap = h337.create({
+    container: document.querySelector(layer_name),
+    gradient: {0.3: 'cyan', 0.4: 'orange', 1: 'red'},
+    radius: 11,
+    maxOpacity: 1.0,
+    minOpacity: 0.6,
+    blur: 0.5
+    // onExtremaChange: function(data) {
+    //   updateLegend(data);
+    // }
+  });
+  var heat_data = { max: max, min: 10, data: regenData( metric ) };
+  // console.log("DATA: %o", heat_data );
+  heatmap.setData( heat_data );
+  heatmap.repaint();
 };
 
 //draw the contrasting circles
@@ -526,15 +539,56 @@ function drawCircles( layer ){
 
 
 //combine canvi
+/*
 function combineCanvas() {
     var floor = document.getElementsByName('#floorplan');
-    // var ctFloor = floor.getContext('2d');
     var thisHeat = document.getElementsByName('#heatmap');
-    // var ctHeat = thisHeat.getContext('2d');
-    // circles = document.getElementsByName('#contrast_circle');
-    // var ctCircles = circles.getContext('2d');
-    var canvas = $('#contrast_circle');
-    var ctx = canvas[0].getContext('2d');
-    ctx.drawImage(floor, 0, 0);
-    ctx.drawImage(thisHeat, 0, 0);
+    var circles = document.getElementsByName('#contrast_circle');
+    var ctFloor = floor.getContext('2d');
+    var ctHeat = thisHeat.getContext('2d');
+    var ctCircles = circles.getContext('2d');
+    ctCircles.drawImage(ctFloor, 0, 0);
+    ctCircles.drawImage(ctHeat, 0, 0);
+};*/
+/*
+var lastX = heatmap.width / 2, lastY = heatmap.height / 2;
+var dragStart, dragged;
+heatmap.addEventListener('mousedown', function (evt) {
+    document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
+    lastX = evt.offsetX || (evt.pageX - heatmap.offsetLeft);
+    lastY = evt.offsetY || (evt.pageY - heatmap.offsetTop);
+    dragStart = ctx.transformedPoint(lastX, lastY);
+    dragged = false;
+}, false);
+heatmap.addEventListener('mousemove', function (evt) {
+    lastX = evt.offsetX || (evt.pageX - heatmap.offsetLeft);
+    lastY = evt.offsetY || (evt.pageY - heatmap.offsetTop);
+    dragged = true;
+    if (dragStart) {
+        var pt = ctx.transformedPoint(lastX, lastY);
+        ctx.translate(pt.x - dragStart.x, pt.y - dragStart.y);
+        redraw();
+    }
+}, false);
+heatmap.addEventListener('mouseup', function (evt) {
+    dragStart = null;
+    if (!dragged) zoom(evt.shiftKey ? -1 : 1);
+}, false);
+
+var scaleFactor = 1.1;
+var zoom = function (clicks) {
+    var pt = ctx.transformedPoint(lastX, lastY);
+    ctx.translate(pt.x, pt.y);
+    var factor = Math.pow(scaleFactor, clicks);
+    ctx.scale(factor, factor);
+    ctx.translate(-pt.x, -pt.y);
+    redraw();
 }
+
+var handleScroll = function (evt) {
+    var delta = evt.wheelDelta ? evt.wheelDelta / 40 : evt.detail ? -evt.detail : 0;
+    if (delta) zoom(delta);
+    return evt.preventDefault() && false;
+};
+heatmap.addEventListener('DOMMouseScroll', handleScroll, false);
+heatmaps.addEventListener('mousewheel', handleScroll, false);*/
