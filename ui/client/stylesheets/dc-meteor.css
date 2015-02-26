@@ -56,7 +56,6 @@ body > div:nth-child(5) {
     position:absolute;
     left:0;
     top:2em;
-    
     z-index:0;
 }
 #heatmap {
@@ -73,6 +72,7 @@ body > div:nth-child(5) {
 }
 .sensor_list {
     width: 300px;
+    padding:2em 0;
     display: block;
     float: right;
     margin-top:3em;
