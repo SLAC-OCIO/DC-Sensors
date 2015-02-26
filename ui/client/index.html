@@ -16,21 +16,19 @@
 
 <template name="sensor_list">
   <div class="sensor_list">
-    <table class="sensors">
-      <!-- <th>
-        <td>description</td><td>temperature</td><td>humidity</td><td>updated</td>
-      </th> -->
+    <ul class="sensors">
+
       {{#each sensors}}
         {{> sensor_item}}
       {{/each}}
-    </table>
+    </ul>
   </div>
 </template>
 
 <template name="sensor_item">
-<tr>
-  <td>{{description _id}}</td><td>{{temp}}C</td><td>{{humidity}}%</td><td>({{livestamp ts}})</td>
-</tr>
+
+  <li><span class="desc">{{description _id}}</span><span class="temp">{{temp}}C</span><span class="hum">{{humidity}}%</span><span class="time">({{livestamp ts}}</span>)</li>
+
 </template>
 
 <template name="upper_chrome">
@@ -44,6 +42,6 @@
 
 <template name="lower_chrome">
     <div class="footer">
-        <p>Thank you, The OCIO DCISN Team</p>
+        &nbsp;
     </div>
 </template>
