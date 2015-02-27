@@ -102,8 +102,7 @@ body > div:nth-child(5) {
 .heatmap { 
   width:1000px;
   height:800px;
-    position:absolute;
-    left:0;
+    float:left;
     top:2em;
     z-index:0;
     display:block;
