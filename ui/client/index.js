@@ -536,20 +536,24 @@ function drawFloorPlan( layer, src ) {
   };
 };
 
+var heatmap = undefined;
+
 //draw the heatmap
 function drawHeatMap( layer_name, metric ) {
   // console.log("drawing heatmap...");
-  var heatmap = h337.create({
-    container: document.querySelector(layer_name),
-    gradient: {0.3: 'cyan', 0.4: 'orange', 1: 'red'},
-    radius: 11,
-    maxOpacity: 1.0,
-    minOpacity: 0.6,
-    blur: 0.5
-    // onExtremaChange: function(data) {
-    //   updateLegend(data);
-    // }
-  });
+  if( heatmap == undefined ) {
+    heatmap = h337.create({
+      container: document.querySelector(layer_name),
+      gradient: {0.3: 'cyan', 0.4: 'orange', 1: 'red'},
+      radius: 11,
+      maxOpacity: 1.0,
+      minOpacity: 0.6,
+      blur: 0.5
+      // onExtremaChange: function(data) {
+      //   updateLegend(data);
+      // }
+    });
+  }
   var heat_data = { max: max, min: 10, data: regenData( metric ) };
   // console.log("DATA: %o", heat_data );
   heatmap.setData( heat_data );
