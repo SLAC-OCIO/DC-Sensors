@@ -6,7 +6,6 @@
   {{>upper_chrome}}
   <div name="heatmap" class="heatmap">
     <canvas id="floorplan" width="1000px" height="800px" ></canvas>
-    <!-- <canvas id="heatmap" width="1000px" height="800px"></canvas> -->
     <canvas id="contrast_circle" width="1000px" height="800px"></canvas>
   </div>
   {{>sensor_list}}
@@ -24,7 +23,7 @@
 </template>
 
 <template name="sensor_item">
-  <li><span class="desc">{{description _id}}</span><span class="temp">{{temp}}C</span><span class="hum">{{humidity}}%</span><span class="time">({{livestamp ts}}</span>)</li>
+  <li><span title="{{_id}}" class="desc">{{description _id}}</span><span class="temp">{{temp}}C</span><span class="hum">{{humidity}}%</span><span class="time">({{livestamp ts}}</span>)</li>
 </template>
 
 <template name="upper_chrome">
@@ -33,6 +32,7 @@
             <img src="/images/slac_logo.png" />
         </div>
         <div class="sitename">OCIO DC Intelligent Sensor Network</div>
+        <div class="button"><input data-role="button" type="button" value="Toggle Sensors"/></div>
     </div>
 </template>
 

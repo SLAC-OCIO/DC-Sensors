@@ -1,20 +1,14 @@
 Sensors = new Meteor.Collection('sensor');
 
-// counter starts at 0
-// Session.setDefault('counter', 0);
+// session not working...
+var isShowAllSensors = true;
 
-// Template.hello.helpers({
-//   counter: function () {
-//     return Session.get('counter');
-//   }
-// });
-//
-// Template.hello.events({
-//   'click button': function () {
-//     // increment the counter when button is clicked
-//     Session.set('counter', Session.get('counter') + 1);
-//   }
-// });
+Template.upper_chrome.events({
+  "click [data-role='button']": function (e) {
+    var opposite = isShowAllSensors == true ? false : true;
+    isShowAllSensors = opposite;
+  }
+});
 
 //console.log('starting app...');
 
@@ -51,14 +45,13 @@ var locations = {
   "00000000233010aeaf952dee": [ 642, 425, '2BF37R' ], // 2BF37 R 
   "00000000232e65058fb7bdee": [ 648, 443, '2BF38F' ], // btwn 2BF37 2BF38 Front 
   "00000000236668afaf952dee": [ 638, 443, '2BF37F' ],  // btwn 2BF37 2BF38 Front
-
+  "00000000233b6c068fb7bdee": [ 666, 443, '2BF39F' ],
 
 
 
   "000bf40": [ 678, 425 ],
   "000bf41": [ 689, 425 ],
 
-  "000bg39": [ 666, 443 ],
   "000bg40": [ 678, 443 ],
   "000bg41": [ 689, 443 ],
 
@@ -475,7 +468,7 @@ var metric = 'temp';
 // attach observers for when data is added or changed
 Sensors.find().observe({
   added: function(datum) {
-    console.log('sensor %s added() %o', datum._id, datum);
+    // console.log('sensor %s added() %o', datum._id, datum);
     // lookup location if not exist; use Session?
     if( ! datum._id in locations ) {
       // TODO location[_id] = []
@@ -484,7 +477,7 @@ Sensors.find().observe({
     redraw( metric );
   },
   changed: function(datum) {
-    console.log('sensor %s changed() %o', datum._id, datum);
+    // console.log('sensor %s changed() %o', datum._id, datum);
     redraw( metric );
   }
 });
@@ -507,18 +500,22 @@ function redraw( metric ) {
 
 var max = 45;
 
+
 // remap data into an array of 3-tuples (x,y,v)
 function regenData( metric ) {
   var tuples = [];
   for (var id in locations) {
-    var v = (id in data) ? parseFloat( data[id][metric] ) : Math.random() * max;
-    var t = {
-      x: locations[id][0],
-      y: locations[id][1],
-      value: v
-    };
-    // console.log('REGEN: id=%s, metric=%s, tuple=%o', id, metric, t);
-    tuples.push(t);
+    
+    if ( (id.length > 8 || isShowAllSensors) ) {
+      var v = (id in data) ? parseFloat( data[id][metric] ) : Math.random() * max;
+      var t = {
+        x: locations[id][0],
+        y: locations[id][1],
+        value: v
+      };
+      // console.log('REGEN: id=%s, metric=%s, tuple=%o', id, metric, t);
+      tuples.push(t);
+    }
   }
   return tuples;
 }
@@ -567,13 +564,16 @@ function drawCircles( layer ){
   var radius = 2;
   
   for (var id in locations) {
-    ctx.beginPath(); //open an svg path
-    ctx.arc(locations[id][0], locations[id][1], radius, 0, 2 * Math.PI, false); //define arc
-    ctx.closePath(); //close the path
-    // TODO: colour by sensor state
-    ctx.fillStyle = 'blue'; //define fill color
-    ctx.fill(); //fill the path
-    //console.log(ctx);
+
+    if(id.length > 8 || isShowAllSensors) {
+      ctx.beginPath(); //open an svg path
+      ctx.arc(locations[id][0], locations[id][1], radius, 0, 2 * Math.PI, false); //define arc
+      ctx.closePath(); //close the path
+      // TODO: colour by sensor state
+      ctx.fillStyle = 'blue'; //define fill color
+      ctx.fill(); //fill the path
+      //console.log(ctx);
+    }
   }
 
 };
