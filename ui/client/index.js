@@ -540,11 +540,11 @@ var heatmap = undefined;
 
 //draw the heatmap
 function drawHeatMap( layer_name, metric ) {
-  // console.log("drawing heatmap...");
-  if( heatmap == undefined ) {
+  if( heatmap === undefined ) {
+    console.log("creating heatmap...");
     heatmap = h337.create({
       container: document.querySelector(layer_name),
-      gradient: {0.3: 'cyan', 0.4: 'orange', 1: 'red'},
+      gradient: {0.2: 'cyan', 0.4: 'yellow', 0.6: 'orange', 1: 'red'},
       radius: 11,
       maxOpacity: 1.0,
       minOpacity: 0.6,
