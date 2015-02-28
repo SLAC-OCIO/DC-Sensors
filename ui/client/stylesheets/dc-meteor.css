@@ -99,7 +99,7 @@ body > div:nth-child(5) {
     border-right-color: #27556C;
 }
 
-.heatmap { 
+.heatmap {
   width:1000px;
   height:800px;
     float:left;
@@ -113,6 +113,27 @@ body > div:nth-child(5) {
   margin-top: 32px;
   width:1000px;
   height:800px;
+}
+.button input[type="button"]{
+    background-color: #6E91A1;
+    border:none;
+    padding:1em;
+    webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    color:#FFFFFF;
+    text-shadow: 2px ;
+
+}
+.button input[type="button"] :hover, .button input[type="button"] :active{
+    border-style: groove;
+
+}
+.button {
+    position:absolute;
+    top:7em;
+    left:2em;
+
 }
 @media (max-width: 1000px) {
     #sensor_wrapper {
