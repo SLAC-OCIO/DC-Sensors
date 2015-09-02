@@ -2,15 +2,17 @@ Meteor.startup(function () {
 
   console.log("starting server...");
 
-  // config rest endpoints
-  Restivus.configure({
-    useAuth: false,
-    prettyJson: false
+  Sensors = new Meteor.Collection('sensors');
+
+  var Api = new Restivus({
+    useDefaultAuth: true,
+    prettyJson: true,
+    defaultHeaders: {
+      'Content-Type': 'application/json'
+    }
   });
-  Restivus.addCollection("sensor", {
-    excludedEndpoints: ['getAll','deleteAll','delete','post'],
-    defaultOptions: {},
-  });
+  
+  Api.addCollection( Sensors );
   
   Meteor.methods({
     findSensors: function(arg){

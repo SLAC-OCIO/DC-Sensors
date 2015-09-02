@@ -6,6 +6,6 @@
 
 meteor-platform
 autopublish
-nimble:restivus@=0.6.0
 insecure
 yee379:livestamp
+nimble:restivus
