@@ -1,38 +1,110 @@
 // Agent Code
+#require "Rocky.class.nut:1.0.0"
+
+app <- Rocky();
 
 
-function renderBaseTop(data) {
-    return "<!DOCTYPE html>"
-        + "<html>"
-        + "<head>"
-        + "<title>" + data.id + " " + data.mac + "</title>"
-        + "<meta http-equiv='refresh' content='2'>"
-        + "<style>h2 { font-family:Verdana;color:#3B6BB2; } p { font-family:Verdana;padding-bottom:10px; } b { color:#3B6BB2; }</style>"
-        + "</head>"
-        + "<body>"
-        + "<table style='width:100%;border:0px;' cellpadding='20'><tr><td align='center'>"
-        + "<h2 align='center'>" + data.id + " " + data.mac + "</h2>"
-        + "<h3>" + data.ts + "</h3>"
-        + "<table style='width:80%;border:1px solid #3B6BB2;border-collapse:collapse;' cellpadding='20'>"
-        + "<tr><td valign='top'>";
-}
+local html = @"
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>imp</title>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <style>
+      h2 { font-family:Verdana;color:#3B6BB2; } 
+      h3 { font-family:Verdana; } 
+      p { font-family:Verdana;padding-bottom:10px; } 
+      b { color:#3B6BB2; }
+    </style>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+    <script>
+        function ledToggle(){
+            var state = $('span#led').text();
+            var to_state = state == 0 ? 1 : 0;
+            console.log('state %s -> %s', state, to_state );
+            $.ajax({
+                url: $(location).attr('pathname') + '/state',
+                type: 'PUT',
+                dataType: 'json',
+                data: JSON.stringify({ 'led': to_state }),
+                success: function(resp){
+                    console.log('OK');
+                },
+                error: function(resp){
+                    console.log('ERROR: %o',resp);
+                }
+                
+            })
+        }
+        function update(){
+            $.ajax({
+                url: $(location).attr('pathname') + '/state',
+                type: 'GET',
+                success: function(resp){
+                    // console.log('%o',resp);
+                    var ts = new Date(0);
+                    ts.setUTCSeconds(resp['ts']);
+                    $('span#timestamp').text( ts );
+                    $.each( resp, function(k,v){
+                        $('span#'+k).text(v);    
+                    });
+                },
+                error: function(resp){
+                    console.log('ERROR: %o',resp);
+                }
+            });
+        }
+        $(document).ready( function(){
+            update();
+            setInterval( update, 2000 );
+        });
+    </script>
+  </head>
+  <body>
+    <table style='width:100%;border:0px;' cellpadding='20'>
+      <tr>
+        <td align='center'>
+          <h2 align='center'>id: <span id='id'></span> mac: <span id='mac'></span></span></h2>
+          <h3><span id='timestamp'></span></h3>
+          <table style='width:85%;border:1px solid #3B6BB2;border-collapse:collapse;' cellpadding='20'>
+            <tr>
+              <td valign='top'>
+              <p><b>Temperature</b> <span id='temp'></span>&deg;C</p>
+              <p><b>Humidity</b> <span id='humidity'></span>%</p>
+              <p><b>Pressure</b> <span id='pressure'></span>hPa</p>
+              <p><b>Lux</b> <span id='lux'></span>lux </p>
+              <p><b>Wifi</b> <span id='bssid'></span> <span id='rssi'></span>dBm</p>
+              <p><b>Voltage</b> <span id='voltage'></span> </p>
+              <p><b>LED</b> <span id='led'></span> <button type='button' onclick='ledToggle()'>Toggle</button></p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>";
 
-local baseBottom = @"</td></tr></table></td></tr></table></body></html>";
-
-local html = null;
 
 local lastReading = {};
 lastReading.id <- null;
 lastReading.mac <- null;
 lastReading.ts <- null;
-lastReading.pressure <- 0;
-lastReading.temp <- 0;
-lastReading.lux <- 0;
-lastReading.humidity <- 0;
+// lastReading.light <- null;
+lastReading.voltage <- null;
+lastReading.bssid <- null;
+lastReading.rssi <- null;
+lastReading.led <- null;
+lastReading.pressure <- null;
+lastReading.temp <- null;
+lastReading.lux <- null;
+lastReading.humidity <- null;
 
 // send stuff to influx
 function sendToInflux(data) {
-    local string = "sensor,id=" + data.id + ",mac_address=" + data.mac + " " + "bssid=\""+data.bssid+"\"" + ",humidity=" + data.humidity + ",led=" + data.led + ",light=" + data.light + ",lux=" + data.lux +",pressure=" + data.pressure + ",rssi=" + data.rssi + ",temp=" + data.temp + ",voltage=" + data.voltage + " " + data.ts;
+    local string = "sensor,id=" + data.id + ",mac_address=" + data.mac + " " + "bssid=\""+data.bssid+"\"" + ",humidity=" + data.humidity + ",led=" + data.led + ",lux=" + data.lux +",pressure=" + data.pressure + ",rssi=" + data.rssi + ",temp=" + data.temp + ",voltage=" + data.voltage + " " + data.ts;
     server.log( " influx: " + string );
     local request = http.post( "http://134.79.129.223:8086/write?db=dc&precision=s", {}, string );
     return request.sendasync( function(result){
@@ -52,7 +124,7 @@ function sendToMongo(data) {
         "ts": data.ts,
         "voltage": data.voltage,
         "led": data.led,
-        "light": data.light,
+        // "light": data.light,
         "bssid": data.bssid,
         "rssi": data.rssi,
         "temp": data.temp,
@@ -83,33 +155,12 @@ function sendToMongo(data) {
     });
 };
 
+
 function manageReading(reading) {
     // Note: reading is the data passed from the device, ie.
     // a Squirrel table with the key 'temp'
     server.log("manageReading() called");
     
-    // Create HTML strings
-    local tempString = "<p><b>Temperature</b> " + format("%.2f", reading.temp) + "&deg;C</p>";
-
-    local humidString = "<p><b>Humidity</b> " + format("%.2f", reading.humidity) + "%</p>";
-
-    local pressString = "<p><b>Pressure</b> " + format("%.2f", reading.pressure) + "hPa &ndash; ";
-    local diff = reading.pressure - lastReading.pressure;
-    if (diff > 0) {
-        pressString = pressString + "rising</p>"
-    } else {
-        pressString = pressString + "falling</p>";
-    }
-    
-    local luxString = "<p><b>Lux</b> " + format("%.2f", reading.lux) + "lux </p>";
-    
-    local otherLed = ! reading.led;
-    local ledString = "<p><b>LED</b><a href='?led=" + otherLed + "'><input type='button' value='Activate'/></a></p>";
-    
-    
-    // set html
-    html = renderBaseTop(reading) + tempString + humidString + pressString + luxString + ledString + baseBottom;
-
     // send data for storage
     if ( reading.ts ) {
         sendToInflux( reading );
@@ -121,38 +172,33 @@ function manageReading(reading) {
 }
 
 
-// html request handler
-function requestHandler(request, response) {
+// display html page
+app.get("/", function(context){
+    context.send( 200, html );    
+})
+
+// all sensor data
+app.get("/state", function(context){
+    context.send( lastReading );
+})
+
+app.put("/state", function(context){
+    server.log(context.req.body);
     try {
-        // Check if the user sent led as a query parameter
-        if ("led" in request.query) {
-            // If they did, and led=1.. set our variable to 1
-            if (request.query.led == "1" || request.query.led == "0") {
-                // Convert the led query parameter to an integer
-                local ledState = request.query.led.tointeger();
-
-                // Send "set.led" message to device, and send ledState as the data
-                device.send("set.led", ledState); 
-                server.log("setting led to " + format("%i",ledState) );
-            }
-            // Send a response back to the browser saying everything was OK.
-            response.send(200, "OK");
-        
-        // web page
+        local d = http.jsondecode(context.req.body);
+        if ( "led" in d ) {
+            local ledState = d.led.tointeger();
+            local resp = {};
+            device.send("set.led", ledState); 
+            resp.led <- ledState;
+            context.send( 200, resp );
         } else {
-            if (html == null) manageReading(lastReading);
-            response.send(200, html);
+            throw "unknown params"
         }
-
-    
-    } catch (ex) {
-        response.send(500, "Internal Server Error: " + ex);
+    } catch(ex) {
+        context.send(400, ex);
     }
-}   
-
-
-// Register the function to handle requests from a web browser
-http.onrequest(requestHandler);
+})
 
 
 // Register the function to handle data messages from the device

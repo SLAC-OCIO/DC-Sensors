@@ -11,7 +11,7 @@ data.mac <- imp.getmacaddress();
 // built in sensors
 data.ts <- 0;
 data.voltage <- hardware.voltage();
-data.light <- hardware.lightlevel();
+// data.light <- hardware.lightlevel();
 
 // wireless data
 data.bssid <- imp.getbssid();
