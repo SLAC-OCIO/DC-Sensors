@@ -3,16 +3,34 @@
 #require "APDS9007.class.nut:1.0.0"
 #require "LPS25H.class.nut:1.0.0"
 
-// Establish a global variable to hold environmental data
+// Establish a global variables
 data <- {};
 data.id <- hardware.getdeviceid();
 data.mac <- imp.getmacaddress();
-data.ts <- hardware.millis()
+
+// built in sensors
+data.ts <- 0;
+data.voltage <- hardware.voltage();
+data.light <- hardware.lightlevel();
+
+// wireless data
+data.bssid <- imp.getbssid();
+data.rssi <- imp.rssi();
+
+// envtail sensors
 data.temp <- 0;
 data.humidity <- 0;
 data.pressure <- 0;
 data.lux <- 0;
-    
+data.led <- 0;
+
+// data.sensor_temp <- "Si702x";
+// data.sensor_pressure <- "LPS25H";
+// data.sensor_lux <- "APDS9007";
+
+// frequency to take results
+frequency <- 5;
+
 // Instance the Si702x and save a reference in tempHumidSensor
 hardware.i2c89.configure(CLOCK_SPEED_400_KHZ);
 local tempHumidSensor = Si702x(hardware.i2c89);
@@ -35,11 +53,14 @@ local led = hardware.pin2;
 led.configure(DIGITAL_OUT, 0);
 
 // This function will be called regularly to take the temperature
-// and log it to the device’s agent
-
+// send data to agent
 function getReadings() {
-    // Flash the LED
-    flashLed();
+
+    // loop continuously
+    imp.wakeup( frequency, getReadings );
+
+    // flash the LED (invert if necessary)
+    data.led = flashLed( 0.1 );
             
     // timestamp
     data.ts = time();
@@ -69,23 +90,31 @@ function getReadings() {
             // Put the imp to sleep for five minutes BUT
             // only do so when impOS has done all it needs to
             // do and has gone into an idle state
-            imp.onidle(function() { server.sleepfor(2); } );
+            // imp.onidle(function() { server.sleepfor(frequency); } );
         });
     });
 }
 
-function flashLed() {
+function flashLed(duration) {
     // Turn the LED on (write a HIGH value)
-    led.write(1);
-    
-    // Pause for half a second
-    imp.sleep(0.1);
-    
-    // Turn the LED off
-    led.write(0);
+    local current_state = led.read();
+    local other_state = ! current_state;
+    other_state = other_state.tointeger()
+    setLedState(other_state);
+    imp.sleep(duration);
+    setLedState(current_state);
+    return current_state;
 }
+
+function setLedState(state) {
+    led.write(state)
+}
+
+agent.on("set.led",setLedState);
 
 // Take a temperature reading as soon as the device starts up
 // Note: when the device wakes from sleep (caused by line 86)
 // it runs its device code afresh - ie. it does a warm boot
+// take every two seconds
 getReadings();
+imp.wakeup( frequency, getReadings );
